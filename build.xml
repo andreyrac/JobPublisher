@@ -1,0 +1,63 @@
+<project>
+	<property name="src" value="src"/>
+	<property name="dst" value="bin"/>
+	<property name="rel" value="staging"/>
+	<property name="out" value="${rel}/ssimwave.jar"/>
+	<property name="main" value="ssimwave.Main"/>
+	<property name="testdir" value="test"/>
+	<property name="testdst" value="${testdir}/bin"/>
+	<property name="testsrc" value="${testdir}/src"/>
+	<property name="testlib" value="${testdir}/lib"/>
+
+	<property name="build.sysclasspath" value="last"/>
+
+	<target name="clean">
+		<delete dir="${dst}"/>
+		<delete file="${out}"/>
+	</target>
+
+	<target name="builddebug">
+		<mkdir dir="${dst}"/>
+		<javac srcdir="${src}" destdir="${dst}" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
+			<compilerarg value="-Xlint:unchecked"/>
+		</javac>
+	</target>
+
+	<target name="build">
+		<mkdir dir="${dst}"/>
+		<javac srcdir="${src}" destdir="${dst}" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
+			<compilerarg value="-Xlint:unchecked"/>
+		</javac>
+	</target>
+
+	<target name="run">
+		<java fork="true" dir="${dst}" classname="${main}"/>
+	</target>
+
+	<target name="jar" depends="build">
+		<mkdir dir="${rel}"/>
+		<jar destfile="${out}" basedir="${dst}">
+			<manifest>
+				<attribute name="Main-Class" value="${main}"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="runjar">
+		<java fork="true" dir="${rel}" jar="${out}"/>
+	</target>
+
+	<target name="buildtest">
+		<mkdir dir="${testdst}"/>
+		<javac destdir="${testdst}" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
+			<compilerarg value="-Xlint:unchecked"/>
+			<src path="${src}"/>
+			<src path="${testsrc}"/>
+			<classpath>
+				<pathelement location="${testlib}/junit-4.12.jar"/>
+				<pathelement location="${testlib}/hamcrest-core.1.3.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+</project>
