@@ -1,4 +1,5 @@
 *~
 *.swp
+logger.txt
 bin/
 staging/
