@@ -23,4 +23,11 @@ public interface Work
 	 * @return identifier for Work item as set by the JobPublisher
 	 */
 	public int getId();
+
+	/**
+	 * The length of work needed to be performed.  Higher values will have this
+	 *	work done sooner.
+	 * @return the length of work needed be performed.
+	 */
+	public long getWorkLength();
 }

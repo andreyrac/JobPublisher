@@ -40,4 +40,9 @@ public class SleepWork implements Work
 	{
 		return id;
 	}
+
+	public long getWorkLength()
+	{
+		return jobTimeLengthMillis;
+	}
 }

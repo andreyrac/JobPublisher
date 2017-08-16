@@ -18,11 +18,13 @@ public class JobPublisherImpl extends JobPublisher
 	private static final int MAX_WORK_TIME_MILLIS = 5 * 1000;
 
 	private JobManager[] managers;
-	private WorkQueue workQueue;
-	private WorkQueue activeWorkQueue;
+	//private WorkQueue workQueue;
+	private WorkTree workTree;
+	//private WorkQueue activeWorkQueue;
+	private WorkTree activeWorkTree;
 	private Random random;
 	private int workCounter = 0;
-	
+
 	/**
 	 * Creates JobPublisher with given number of managers and workers per
 	 *  managers.
@@ -32,8 +34,8 @@ public class JobPublisherImpl extends JobPublisher
 	 */
 	public JobPublisherImpl(int numberOfManagers, int numberOfWorkersPerManager)
 	{
-		workQueue = new WorkQueue();
-		activeWorkQueue = new WorkQueue();
+		workTree = new WorkTree();
+		activeWorkTree = new WorkTree();
 		random = new Random(System.currentTimeMillis());
 
 		managers = new JobManager[numberOfManagers];
@@ -90,6 +92,7 @@ public class JobPublisherImpl extends JobPublisher
 			else if ("d".equals(input))
 			{
 				Logger.setDebug(!Logger.getDebug());
+				continue;
 			}
 
 			// pass on the number of jobs to the publisher
@@ -120,8 +123,8 @@ public class JobPublisherImpl extends JobPublisher
 	 */
 	public Work getWork()
 	{
-		Work work = workQueue.dequeue();
-		if (work != null) activeWorkQueue.enqueue(work);
+		Work work = workTree.removeHighest();
+		if (work != null) activeWorkTree.put(work.getWorkLength(), work);
 		return work;
 	}
 
@@ -130,7 +133,7 @@ public class JobPublisherImpl extends JobPublisher
 	 */
 	public void workDone(Work work)
 	{
-		if (!activeWorkQueue.dequeue(work))
+		if (!activeWorkTree.remove(work.getWorkLength()))
 		{
 			Logger.error("Work done not found: %d", work.getId());
 		}
@@ -146,14 +149,14 @@ public class JobPublisherImpl extends JobPublisher
 		{
 			Logger.throwable("Work has thrown a throwable: ", t);
 		}
-		else if (!activeWorkQueue.dequeue(work))
+		else if (!activeWorkTree.remove(work.getWorkLength()))
 		{
 			Logger.error("Work not done not found: %d", work.getId());
 		}
 		else
 		{
 			Logger.info("Work not done: %d", work.getId());
-			workQueue.enqueueFirst(work);
+			workTree.put(work.getWorkLength(), work);
 		}
 	}
 
@@ -164,16 +167,15 @@ public class JobPublisherImpl extends JobPublisher
 	private void enqueueJobs(int numberOfJobsToEnqueue)
 	{
 		// if the work queue was empty, notify managers
-		boolean notifyManagers = workQueue.isEmpty();
+		boolean notifyManagers = workTree.isEmpty();
 		for (int i = 0 ; i < numberOfJobsToEnqueue ; i++)
 		{
 			int workId = workCounter++;
-			long jobTimeLengthMillis = 1+random.nextInt(MAX_WORK_TIME_MILLIS);
-			Logger.info("SleepWork[%d,%d] enqueued", workId,
-				jobTimeLengthMillis);
-			SleepWork work = new SleepWork(jobTimeLengthMillis);
+			long length = 1 + random.nextInt(MAX_WORK_TIME_MILLIS);
+			Logger.info("SleepWork[%d,%d] enqueued", workId, length);
+			SleepWork work = new SleepWork(length);
 			work.setId(workId);
-			workQueue.enqueue(work);
+			workTree.put(length, work);
 		}
 
 		// return early if managers don't need to be notified
