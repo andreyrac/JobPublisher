@@ -18,9 +18,7 @@ public class JobPublisherImpl extends JobPublisher
 	private static final int MAX_WORK_TIME_MILLIS = 5 * 1000;
 
 	private JobManager[] managers;
-	//private WorkQueue workQueue;
 	private WorkTree workTree;
-	//private WorkQueue activeWorkQueue;
 	private WorkTree activeWorkTree;
 	private Random random;
 	private int workCounter = 0;
@@ -139,7 +137,7 @@ public class JobPublisherImpl extends JobPublisher
 		}
 		else
 		{
-			Logger.info("Work done: %d", work.getId());
+			Logger.info("Work done: id=[%d] workLength=[%d]", work.getId(), work.getWorkLength());
 		}
 	}
 
