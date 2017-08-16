@@ -42,10 +42,10 @@ A) With ANT:
 	> ant run -Dargs="5 15 -a -d"
 
 B) Without ANT:
-	Running without ant is a little more fluid, but no
-	> run.bat
+	Running without ant is a little more fluid
+	> run.bat 
 	Arguments work as normal, for example:
-	> ant run -Dargs="5 15 -llogger2.txt"
+	> run.bat 5 15 -llogger2.txt
 
 
 3. HOW TO USE JobPublisher
