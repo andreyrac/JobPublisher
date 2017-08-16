@@ -77,20 +77,13 @@ public class Worker implements Runnable
 	{
 		try
 		{
-			Work work = null;
+			Work work;
 			for (;;)
 			{
 				Logger.debug("%s synchronizing", workerLabel);
 				synchronized (this)
 				{
-					// clear work, then inform manager to avoid race condition
-					if (work != null)
-					{
-						this.work = null;
-						manager.workDone(work, id);
-						work = null;
-					}
-
+					work = null;
 					while (work == null)
 					{
 						// check if we should die
@@ -121,12 +114,23 @@ public class Worker implements Runnable
 					work.doWork(); // BLOCKING: doing work
 					Logger.debug("%s completed Work[%d]", workerLabel,
 						work.getId());
+					// clear work, then inform manager to avoid race condition
+					synchronized (this)
+					{
+						this.work = null;
+					}
+					manager.workDone(work, id);
 				}
 				catch(Throwable t)
 				{
-					manager.workNotDone(this.work, id, t);
 					Logger.debug("%s failed to complete Work[%d]", workerLabel,
 						work.getId());
+					// clear work, then inform manager to avoid race condition
+					synchronized (this)
+					{
+						this.work = null;
+					}
+					manager.workNotDone(work, id, t);
 				}
 			} // for (;;)
 		}
