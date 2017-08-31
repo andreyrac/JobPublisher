@@ -15,7 +15,7 @@ public class Worker implements Runnable
 
 	// member variables to be accessed when synchonized
 	private Work work;
-	private boolean kill = false;
+	private boolean kill;
 
 	/**
 	 * Create a Worker with an associated index and manager
@@ -27,6 +27,8 @@ public class Worker implements Runnable
 		this.manager = manager;
 		this.id = id;
 		this.workerLabel = String.format("Worker[%d,%d]", manager.getId(), id);
+		work = null;
+		kill = false;
 		new Thread(this).start();
 	}
 

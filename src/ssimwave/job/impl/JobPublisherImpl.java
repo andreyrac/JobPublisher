@@ -21,7 +21,7 @@ public class JobPublisherImpl extends JobPublisher
 	private WorkTree workTree;
 	private WorkTree activeWorkTree;
 	private Random random;
-	private int workCounter = 0;
+	private int workCounter;
 
 	/**
 	 * Creates JobPublisher with given number of managers and workers per
@@ -35,6 +35,7 @@ public class JobPublisherImpl extends JobPublisher
 		workTree = new WorkTree();
 		activeWorkTree = new WorkTree();
 		random = new Random(System.currentTimeMillis());
+		workCounter = 0;
 
 		managers = new JobManager[numberOfManagers];
 		for (int i = managers.length - 1; i >= 0 ; i--)
@@ -77,6 +78,7 @@ public class JobPublisherImpl extends JobPublisher
 			{
 				Logger.throwable(
 					"An I/O Exception has occurred during user input: ", ioe);
+				kill();
 				break;
 			}
 
@@ -141,13 +143,16 @@ public class JobPublisherImpl extends JobPublisher
 		}
 	}
 
+	/**
+	 * Called by manager when work is not able to be done
+	 */
 	public void workNotDone(Work work, Throwable t)
 	{
 		if (t != null)
 		{
 			Logger.throwable("Work has thrown a throwable: ", t);
 		}
-		else if (!activeWorkTree.remove(work.getWorkLength()))
+		if (!activeWorkTree.remove(work.getWorkLength()))
 		{
 			Logger.error("Work not done not found: %d", work.getId());
 		}

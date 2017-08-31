@@ -69,7 +69,8 @@ public class Logger
 	}
 
 	/**
-	 * @param msg message to be printed
+	 * Write debug level logs
+	 * @param format message format that can be filled in with args
 	 */
 	public static void debug(String format, Object... args)
 	{
@@ -80,6 +81,10 @@ public class Logger
 		}
 	}
 
+	/**
+	 * Write info level logs
+	 * @param format message format that can be filled in with args
+	 */
 	public static void info(String format, Object... args)
 	{
 		synchronized (getLogger())
@@ -88,6 +93,10 @@ public class Logger
 		}
 	}
 
+	/**
+	 * Write error level logs
+	 * @param format message format that can be filled in with args
+	 */
 	public static void error(String format, Object... args)
 	{
 		synchronized (getLogger())
@@ -96,6 +105,10 @@ public class Logger
 		}
 	}
 
+	/**
+	 * Write message and stack to logs at error level
+	 * @param format message format that can be filled in with args
+	 */
 	public static void throwable(String format, Throwable t, Object... args)
 	{
 		synchronized (getLogger())

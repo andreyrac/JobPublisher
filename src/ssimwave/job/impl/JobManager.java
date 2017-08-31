@@ -1,6 +1,5 @@
 package ssimwave.job.impl;
 
-import ssimwave.job.JobPublisher;
 import ssimwave.job.Work;
 import ssimwave.util.Logger;
 
@@ -13,7 +12,7 @@ public class JobManager implements Runnable
 	// member variables to only be accessed on synchronized
 	private boolean[] workersBusy;
 	private int busyWorkers;
-	private boolean kill = false;
+	private boolean kill;
 
 	/**
 	 * 
@@ -29,6 +28,7 @@ public class JobManager implements Runnable
 		workers = new Worker[numberOfWorkers];
 		workersBusy = new boolean[workers.length];
 		busyWorkers = 0;
+		kill = false;
 		for (int i = 0 ; i < workers.length ; i++)
 		{
 			workers[i] = new Worker(this, i);
