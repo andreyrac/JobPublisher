@@ -36,11 +36,12 @@ public abstract class JobPublisher
 	/**
 	 * Retrieves new generic job publisher that meets the parameter criteria.
 	 * @param numberOfManagers the number of managers to assign to publisher
-	 * @param numberOfWorkerPerManager the number of worker that each manager
+	 * @param numberOfWorkersPerManager the number of worker that each manager
 	 *	should have.
+	 * @param useExecutorService set to true if use of java.util.concurrent.ExecutorService is desired
 	 */
 	public static JobPublisher getJobPublisher(int numberOfManagers,
-		int numberOfWorkersPerManager)
+		int numberOfWorkersPerManager, boolean useExecutorService)
 	{
 		return new JobPublisherImpl(numberOfManagers, 
 			numberOfWorkersPerManager);

@@ -32,15 +32,29 @@ public class JobPublisherImpl extends JobPublisher
 	 */
 	public JobPublisherImpl(int numberOfManagers, int numberOfWorkersPerManager)
 	{
+		this(numberOfManagers, numberOfWorkersPerManager, false);
+	}
+
+	/**
+	 * Creates JobPublisher with given number of managers and workers per
+	 *  managers.
+	 * @param numberOfManagers number of managers to create and use
+	 * @param numberOfWorkersPerManager number of workers per manager to
+	 *	create and use
+	 * @param useExecutors set to true if use of java.util.concurrent.ExecutorService is desired
+	 */
+	public JobPublisherImpl(int numberOfManagers, int numberOfWorkersPerManager, boolean useExecutors)
+	{
 		workTree = new WorkTree();
 		activeWorkTree = new WorkTree();
 		random = new Random(System.currentTimeMillis());
 		workCounter = 0;
 
-		managers = new JobManager[numberOfManagers];
+		managers = useExecutors ? new JobManagerExecutor[numberOfManagers] : new JobManagerImpl[numberOfManagers];
 		for (int i = managers.length - 1; i >= 0 ; i--)
 		{
-			managers[i] = new JobManager(this, numberOfWorkersPerManager, i);
+			managers[i] = useExecutors ? new JobManagerExecutor(this, numberOfWorkersPerManager, i) :
+				new JobManagerImpl(this, numberOfWorkersPerManager, i);
 		}
 	}
 

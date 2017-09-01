@@ -21,6 +21,7 @@ public class Main
 		System.out.println("    -h           prints this help message and exits");
 		System.out.println("    -l<logfile>  to specify logging file; default is 'logger.txt'");
 		System.out.println("    -a           indicates that we should append to the logging file");
+		System.out.println("    -e           indicates that program should use executor service");
 	}
 
 	/**
@@ -33,6 +34,7 @@ public class Main
 		String logfile = "logger.txt";
 		boolean append = false;
 		boolean setDebug = false;
+		boolean useExecutorService = false;
 
 		int numberOfManagers = JobPublisher.DEFAULT_NUMBER_OF_MANAGERS;
 		int numberOfWorkersPerManager = JobPublisher.DEFAULT_NUMBER_OF_WORKERS;
@@ -57,6 +59,12 @@ public class Main
 			if ("-a".equals(arg))
 			{
 				append = true;
+				continue;
+			}
+
+			if ("-e".equals(arg))
+			{
+				useExecutorService = true;
 				continue;
 			}
 
@@ -142,7 +150,7 @@ public class Main
 		try
 		{
 			JobPublisher.getJobPublisher(numberOfManagers, 
-				numberOfWorkersPerManager).runLoop();
+				numberOfWorkersPerManager, useExecutorService).runLoop();
 		}
 		catch (Throwable t)
 		{

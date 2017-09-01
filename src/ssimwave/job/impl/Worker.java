@@ -9,11 +9,11 @@ import ssimwave.util.Logger;
  */
 public class Worker implements Runnable
 {
-	private JobManager manager;
+	private JobManagerImpl manager;
 	private int id;
 	private String workerLabel;
 
-	// member variables to be accessed when synchonized
+	// member variables to be accessed when synchronized
 	private Work work;
 	private boolean kill;
 
@@ -22,7 +22,7 @@ public class Worker implements Runnable
 	 * @param manager the manager/owner of this worker
 	 * @param id an associated ID assigned by the manager
 	 */
-	public Worker(JobManager manager, int id)
+	public Worker(JobManagerImpl manager, int id)
 	{
 		this.manager = manager;
 		this.id = id;
